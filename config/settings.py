@@ -34,7 +34,7 @@ secrets = json.loads(open(SECRET_BASE_FILE).read())
 
 SECRET_KEY = secrets['SECRET_KEY']
 
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Application definition
 
 INSTALLED_APPS = [

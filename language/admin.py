@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Feedback
+from .models import Suggestion
 
-@admin.register(Feedback)
+@admin.register(Suggestion)
 class BookmarkAdmin(admin.ModelAdmin):  
     list_display = ('id', 'content', 'is_checked', 'created_at', 'updated_at',)
     list_filter = ('is_checked',)
