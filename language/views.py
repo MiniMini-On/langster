@@ -26,15 +26,15 @@ class TestNumView(APIView) :
     def get(self, request):
         try:
             number = TestNum.objects.last()
-        
+            if number == None:
+                TestNum.objects.create(number = 1)
+                number = TestNum.objects.last()
             serializer = serializers.TestNumSerializer(number)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
             
         except TestNum.DoesNotExist:
-            TestNum.objects.create(number = 1)
-            number = TestNum.objects.last()
-            serializer = serializers.TestNumSerializer(number)
-        
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_404_NOT_FOUND)
+            
     
 class LanguageTestView(APIView) :
     @transaction.atomic
