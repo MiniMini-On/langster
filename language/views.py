@@ -7,6 +7,8 @@ import tensorflow as tf
 from konlpy.tag import Okt
 import pickle
 import re
+from .models import TestNum 
+from django.db import transaction
 
 
 class SuggestionView(APIView) :
@@ -19,8 +21,23 @@ class SuggestionView(APIView) :
         
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
     
-class LanguageTestView(APIView) :
+class TestNumView(APIView) :
+
+    def get(self, request):
+        try:
+            number = TestNum.objects.last()
+        
+            serializer = serializers.TestNumSerializer(number)
+            
+        except TestNum.DoesNotExist:
+            TestNum.objects.create(number = 1)
+            number = TestNum.objects.last()
+            serializer = serializers.TestNumSerializer(number)
+        
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
+class LanguageTestView(APIView) :
+    @transaction.atomic
     def post(self, request):
         
         if not 'input' in request.data:
@@ -40,6 +57,10 @@ class LanguageTestView(APIView) :
         X = tokenizer.texts_to_sequences(X)
         X = keras.preprocessing.sequence.pad_sequences(X, value=0, padding='post', maxlen=255)
 
+        number = TestNum.objects.last()
+        number.number += 1
+        number.save()
+        
         res = model.predict(X)
     
         if res >= 0.5:
