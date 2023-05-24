@@ -34,7 +34,6 @@ class TestNumView(APIView) :
             
         except TestNum.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-            
     
 class LanguageTestView(APIView) :
     @transaction.atomic
